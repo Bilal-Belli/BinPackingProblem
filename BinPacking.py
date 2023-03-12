@@ -85,7 +85,7 @@ class BinPacking:
     #!solve the problem using branch and bound method
     def solve(self):
         bin_list,bound = self.find_solution()
-        print("BOUND IS : ",bound)
+        
         initial_items = self.items.copy()
         
         #*init the root node
@@ -129,7 +129,7 @@ bp = BinPacking([Item(20),Item(34),Item(25),Item(46),Item(67),Item(23),Item(45),
 Item(20),Item(34),Item(25),Item(46),Item(67),Item(23),Item(45),Item(12),Item(63)
 """
 bins,bound = bp.solve()
-
+print("bound is ",bound)
 for bin in bins:
     for item in bin.items:
         print (item.space,",")
