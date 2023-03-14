@@ -1,6 +1,7 @@
 
 
 import heapq
+import time
 
 
 def nextFit(objects,bin_size):
@@ -41,12 +42,14 @@ def BinPacking_BB(objects,bin_size):
                        objects)]      # list of remaining objects (initially we haven't pack any object yet)
     
     # While the priority queue is not empty
+    cpt = 0
+    elag = 0
     while priority_queue:
-
         # pop the state which has the lowest lower bound
         (lower_bound,number_of_remaining_objects,bins,remaining_objects) = heapq.heappop(priority_queue)
         # If the best solution has already been found and the lower bound of the current state is >= the number of bins used in that solution, we skip this state (i.e : on fait un elagage)
         if(solution is not None and lower_bound >= solution['number_of_bins_used']):
+            elag += 1
             continue
 
         # If all the objects are packed, we have to check if the current solution is the best, if yes we sould update the solution
@@ -81,7 +84,10 @@ def BinPacking_BB(objects,bin_size):
             lower_bound = len(new_remaining_objects) / bin_size + len(nextFit(new_remaining_objects,bin_size))
             # push the state to the priority queue
             heapq.heappush(priority_queue,(lower_bound,len(new_remaining_objects),new_bins,new_remaining_objects))
-
+        cpt += 1
+    print(f"")
+    print(f"Nombre d'iteration : {cpt}")
+    print(f"Nombre d'elagage : {elag}")
     return solution
 
 
@@ -89,13 +95,19 @@ def BinPacking_BB(objects,bin_size):
     # Test 
 
 # List of objects
-objects = [20, 34, 25, 46, 67, 23, 45, 12, 63]
+objects = [5, 13, 23, 11, 9, 7, 12, 4, 3, 1, 26, 5, 1, 7, 11, 27, 2, 1, 9, 10]
 
 # Bin size
-bin_size = 100
+bin_size = 30
+
+start_time = time.time()
 
 # Find the solution (minimum number of bins used & distribution of objects in the bins)
 solution = BinPacking_BB(objects,bin_size)
+
+
+end_time = time.time()
+elapsed_time = end_time - start_time
 
 # Print the result
 print(f"")
@@ -106,7 +118,8 @@ print(f"")
 for i, bin in enumerate(solution['bins']):
     print(f"Bin {i + 1}: {bin}")
 print(f"")
-    
+print(f"Elapsed time: {elapsed_time:.5f} seconds")
+print(f"")
 
 
 
