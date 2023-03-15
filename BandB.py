@@ -1,77 +1,74 @@
 import heapq
 
 def nextFit(objects,bin_size):
-    # Initialize an empty list to store the bins
+    # Initialiser une liste vide pour stocker les "bins" bacs
     bins = []
-    # Initialize the index of current bin to 0
+    # Initialiser l'index du bin courant à 0
     bin_index = 0
     for object in objects:
-        # If the current bin index is >= the number of bins in the list
-        # we have to add a new bin to the list
+        # Si l'index de bac actuel est >= le nombre de bacs dans la liste
+        # nous devons ajouter un nouveau bac à la liste
         if bin_index >= len(bins):
             bins.append([])
-        # If the current bin has enough space we add the object to this bin
+        # Si le bac actuel a suffisamment d'espace, nous ajoutons l'objet à ce bac
         if(sum(bins[bin_index]) + object <= bin_size):
             bins[bin_index].append(object)
-        # Otherwise, we start a new bin and we add the object
+        # Sinon, on commence un nouveau bin et on ajoute l'objet
         else:
             bin_index += 1
             bins.append([object])
     return bins
 
 def BinPacking_BB(objects,bin_size):
-    # Get the number of objects
+    # Obtenir le nombre d'objets
     n = len(objects)
-    # Initial solution : initialize the lowerbound (minimum bins used)
+    # Solution initiale : initialiser la borne inférieure (bins minimum utilisés)
     lower_bound = n / bin_size
-    # Initialize the best solution to None
+    # Initialiser la meilleure solution à Aucun
     solution = None
-    # Initialize a priority queue
-    priority_queue = [(lower_bound,   # lower bound
-                        n,             # number of remaining objects
-                        [],            # empty list for bins
-                        objects)]      # list of remaining objects (initially we haven't pack any object yet)
-    # While the priority queue is not empty
+    # Initialiser une file d'attente prioritaire
+    priority_queue = [(lower_bound,   # borne inférieure
+                        n,             # nombre d'objets restants
+                        [],            # liste vide pour les bacs
+                        objects)]      # liste des objets restants (initialement nous n'avons encore emballé aucun objet)
+    # Tant que la file d'attente prioritaire n'est pas vide
     cpt = 0
     elag = 0
     while priority_queue:
-        # pop the state which has the lowest lower bound
+        # pop l'état qui a la borne inférieure la plus basse
         (lower_bound,number_of_remaining_objects,bins,remaining_objects) = heapq.heappop(priority_queue)
-        # If the best solution has already been found and the lower bound of the current state is >= the number of bins used in that solution, we skip this state (i.e : on fait un elagage)
+        # Si la meilleure solution a déjà été trouvée et que la borne inférieure de l'état actuel est >= le nombre de bacs utilisés dans cette solution, nous sautons cet état (c'est-à-dire : on fait un elagage)
         if(solution is not None and lower_bound >= solution['number_of_bins_used']):
             elag += 1
             continue
-        # If all the objects are packed, we have to check if the current solution is the best, if yes we sould update the solution
+        # Si tous les objets sont emballés, il faut vérifier si la solution actuelle est la meilleure, si oui il faut mettre à jour la solution
         if not remaining_objects:
             number_of_bins_used = len(bins) 
             if solution is None or number_of_bins_used < solution['number_of_bins_used']:
-                # Update the solution
+                # Mettre à jour la solution
                 solution = {
                     'number_of_bins_used' : number_of_bins_used,
                     'bins' : bins,
                 }
-        # Otherwise, branch by considering all possible bins to pack the next object and push this state to the priority queue
+        # Sinon, branchez en considérant tous les bacs possibles pour emballer l'objet suivant et poussez cet état vers la file d'attente prioritaire
         else:
-            object = remaining_objects[0] # get the object from the list of remaining objects
+            object = remaining_objects[0] # récupérer l'objet dans la liste des objets restants
             for bin_index, bin in enumerate(bins):
-                # if we can add the objects to one of the bins we have
+                # si nous pouvons ajouter les objets à l'un des bacs que nous avons
                 if sum(bin) + object <= bin_size: 
-                    new_bins = bins[:] #update the new bins
-                    new_bins[bin_index] = bin + [object] #add the object to the bin
-                    new_remaining_objects = remaining_objects[1:] #update the remaining objects
-                    #calculate the lower bound
+                    new_bins = bins[:] # mettre à jour les nouveaux bacs
+                    new_bins[bin_index] = bin + [object] # ajouter l'objet à la bin
+                    new_remaining_objects = remaining_objects[1:] # mettre à jour les objets restants
+                    # calculer la borne inférieure
                     lower_bound = len(new_remaining_objects) / bin_size + len(nextFit(new_remaining_objects,bin_size))
-                    #push the state to the priority queue
+                    # pousser l'état vers la file d'attente prioritaire
                     heapq.heappush(priority_queue,(lower_bound,len(new_remaining_objects),new_bins,new_remaining_objects))
-            # If we can't add the objects to one of the existant bins, we add one
-            new_bins = bins + [[object]] #update the bins
+            # Si nous ne pouvons pas ajouter les objets à l'un des bacs existants, nous en ajoutons un
+            new_bins = bins + [[object]] # mettre à jour les bacs
             new_remaining_objects = remaining_objects[1:]
-            # calculate the lower bound
+            # calculer la borne inférieure
             lower_bound = len(new_remaining_objects) / bin_size + len(nextFit(new_remaining_objects,bin_size))
-            # push the state to the priority queue
+            # pousser l'état vers la file d'attente prioritaire
             heapq.heappush(priority_queue,(lower_bound,len(new_remaining_objects),new_bins,new_remaining_objects))
         cpt += 1
-    # print(f"")
-    print(f"Nombre d'iteration : {cpt}")
-    print(f"Nombre d'elagage : {elag}")
     return solution,cpt,elag
