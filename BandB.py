@@ -71,7 +71,7 @@ def BinPacking_BB(objects,bin_size):
             # push the state to the priority queue
             heapq.heappush(priority_queue,(lower_bound,len(new_remaining_objects),new_bins,new_remaining_objects))
         cpt += 1
-    print(f"")
+    # print(f"")
     print(f"Nombre d'iteration : {cpt}")
     print(f"Nombre d'elagage : {elag}")
-    return solution
+    return solution,cpt,elag

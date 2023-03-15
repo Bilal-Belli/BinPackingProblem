@@ -11,20 +11,33 @@ def binpackingfunctionBruteForce():
 def binpackingfunctionBranchAndBound():
     start_time = time.time()
     # Find the solution (minimum number of bins used & distribution of objects in the bins)
-    solution = BinPacking_BB(Objets,bin_size)
+    solution,cpt,elag = BinPacking_BB(Objets,bin_size)
     end_time = time.time()
     elapsed_time = end_time - start_time
 
-    for label in content_frame.winfo_children():
-        label.destroy()
-    for i, bin in enumerate(solution['bins']):
-        tk.Label(content_frame, text=f"Bin {i + 1}: {bin}").pack()
+    for tableau in content_frame.winfo_children():
+        tableau.destroy()
+    couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
+    # Créer une liste de tableaux avec des cases aléatoires
+    for i , bin in enumerate(solution['bins']):
+        couleur = couleurs[i % len(couleurs)]
+        tableau = tk.Frame(content_frame, bd=1, relief="solid", bg=couleur)
+        for j in range(len(bin)):
+            tk.Label(tableau, text=f" {bin[j]} ", bd=1, relief="solid").pack(side="left", padx=5, pady=5, fill="x")
+        tableau.pack(side="top", padx=10, pady=10, fill="x")
+
     result = f"{elapsed_time:.5f}"
     result2 = f"{solution['number_of_bins_used']}"
+    result3 = f"{cpt}"
+    result4 = f"{elag}"
     result = "Temp d'Execution: " + str(result)+ " s"
     result2 = "NB_bins Minimal: " + str(result2) 
+    result3 = "NB_Itérations: " + str(cpt) 
+    result4 = "NB_Elagages: " + str(elag) 
     result_label.config(text=result)
     result_label2.config(text=result2)
+    result_label3.config(text=result3)
+    result_label4.config(text=result4)
 
 # Create a window object
 window = tk.Tk()
@@ -55,17 +68,24 @@ top_frame.place(relx=0.5, rely=0, anchor=tk.N)
 output_frame = tk.Frame(main_frame)
 output_frame.pack(side=tk.LEFT,  fill=tk.BOTH, expand=True)
 # Create a label for the output
-result_label = tk.Label(output_frame, text="Temp d'Execution: --")
+result_label = tk.Label(output_frame, text="Temp d'Execution: --",bg="#FFFF00")
 result_label.pack(side=tk.LEFT)
-result_label2 = tk.Label(output_frame, text="NB_bins Minimal: --")
+result_label2 = tk.Label(output_frame, text="NB_bins Minimal: --",bg="#FFFF00")
 result_label2.pack(side=tk.LEFT)
+result_label3 = tk.Label(output_frame, text="NB_Itérations: --",bg="#FFFF00")
+result_label3.pack(side=tk.LEFT)
+result_label4 = tk.Label(output_frame, text="NB_Elagages: --",bg="#FFFF00")
+result_label4.pack(side=tk.LEFT)
 output_frame.place(relx=0.5, rely=0.1, anchor=tk.N)
 
 # Create a frame for the bins content
-content_frame = tk.Frame(main_frame)
+content_frame = tk.Frame(main_frame, bd=1, relief="solid")
 content_frame.pack(side=tk.LEFT, expand=True)
 # Create a label for the content
 content_frame.place(relx=0.5, rely=0.2, anchor=tk.N)
+
+# Créer un cadre pour le tableau
+tableau = tk.Frame(content_frame, bd=1, relief="solid")
 
 # Ouvrir le fichier en mode lecture
 with open("taillesObjets.txt", "r") as file:
