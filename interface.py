@@ -11,33 +11,28 @@ def binpackingfunctionBruteForce():
 def binpackingfunctionBranchAndBound():
     start_time = time.time()
     # Find the solution (minimum number of bins used & distribution of objects in the bins)
-    solution,cpt,elag = BinPacking_BB(Objets,bin_size)
+    minBoxes, solution = branchAndBound(nb_objets, bin_size, Objets)
     end_time = time.time()
     elapsed_time = end_time - start_time
-
-    for tableau in content_frame.winfo_children():
+    for tableau in bins_frame.winfo_children():
         tableau.destroy()
     couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
     # Créer une liste de tableaux avec des cases aléatoires
-    for i , bin in enumerate(solution['bins']):
-        couleur = couleurs[i % len(couleurs)]
-        tableau = tk.Frame(content_frame, bd=1, relief="solid", bg=couleur)
-        for j in range(len(bin)):
-            tk.Label(tableau, text=f" {bin[j]} ", bd=1, relief="solid").pack(side="left", padx=5, pady=5, fill="x")
-        tableau.pack(side="top", padx=10, pady=10, fill="x")
-
+    for i, bin in enumerate(solution):
+        if bin:
+            couleur = couleurs[i % len(couleurs)]
+            tableau = tk.Frame(bins_frame, bd=1, relief="solid", bg=couleur)
+            for j in range(len(bin)):
+                tk.Label(tableau, text=f" {bin[j]} ", bd=1, relief="solid").pack(side="left", padx=5, pady=5, fill="x")
+            tableau.pack(side="top", padx=10, pady=10, fill="x")
+    bins_frame.update_idletasks()
+    content_canvas.config(scrollregion=content_canvas.bbox(tk.ALL))
     result = f"{elapsed_time:.5f}"
-    result2 = f"{solution['number_of_bins_used']}"
-    result3 = f"{cpt}"
-    result4 = f"{elag}"
-    result = "Temp d'Execution: " + str(result)+ " s"
-    result2 = "NB_bins Minimal: " + str(result2) 
-    result3 = "NB_Itérations: " + str(cpt) 
-    result4 = "NB_Elagages: " + str(elag) 
+    result2 = f"{minBoxes}"
+    result  = "Temp d'Execution: " + str(result)+ " s"
+    result2 = "NB_bins Minimal: " + str(minBoxes) 
     result_label.config(text=result)
     result_label2.config(text=result2)
-    result_label3.config(text=result3)
-    result_label4.config(text=result4)
 
 # Create a window object
 window = tk.Tk()
@@ -82,13 +77,27 @@ output_frame.place(relx=0.5, rely=0.1, anchor=tk.N)
 content_frame = tk.Frame(main_frame, bd=1, relief="solid")
 content_frame.pack(side=tk.LEFT, expand=True)
 # Create a label for the content
-content_frame.place(relx=0.5, rely=0.2, anchor=tk.N)
+content_label = tk.Label(content_frame, text="Bins Content")
+content_label.pack(side=tk.TOP, padx=10, pady=10)
+
+# Create a canvas for the bins content
+content_canvas = tk.Canvas(content_frame, bd=0, highlightthickness=0)
+content_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+# Add a scrollbar for the canvas
+content_scrollbar = tk.Scrollbar(content_frame, orient=tk.VERTICAL, command=content_canvas.yview)
+content_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+content_canvas.config(yscrollcommand=content_scrollbar.set)
+
+# Create a frame inside the canvas to hold the bins
+bins_frame = tk.Frame(content_canvas)
+content_canvas.create_window((0, 0), window=bins_frame, anchor=tk.NW)
 
 # Créer un cadre pour le tableau
-tableau = tk.Frame(content_frame, bd=1, relief="solid")
+tableau = tk.Frame(bins_frame, bd=1, relief="solid")
 
 # Ouvrir le fichier en mode lecture
-with open("taillesObjets.txt", "r") as file:
+with open("benchMark.txt", "r") as file:
     Objets = []
     # Lire le contenu ligne par ligne
     for ligne in file:
@@ -98,7 +107,11 @@ with open("taillesObjets.txt", "r") as file:
 
 # Test 
 # Bin size
-bin_size = 30
+bin_size = 50
+nb_objets=50
 
+# Update the canvas scroll region after adding the bins
+bins_frame.update_idletasks()
+content_canvas.config(scrollregion=content_canvas.bbox(tk.ALL))
 # Start the main event loop
 window.mainloop()

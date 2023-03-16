@@ -1,74 +1,72 @@
-import heapq
+import copy   # pour deep copying lists
+class Node:
+    def __init__(self, wRemaining, level, numBoxes, boxContents):
+        # initialize a Node object avec les parameters
+        self.wRemaining = wRemaining
+        self.level = level
+        self.numBoxes = numBoxes
+        self.boxContents = boxContents # Content of each box at the end
+    def getLevel(self):
+        # return the level of the node
+        return self.level
+    def getNumberBoxes(self):
+        # return the number of boxes in the node
+        return self.numBoxes
+    def getWRemainings(self):
+        # return the list of remaining capacities of all bins
+        return self.wRemaining
+    def getWRemaining(self, i):
+        # return the remaining capacity of the i-th bin
+        return self.wRemaining[i]
 
-def nextFit(objects,bin_size):
-    # Initialiser une liste vide pour stocker les "bins" bacs
-    bins = []
-    # Initialiser l'index du bin courant à 0
-    bin_index = 0
-    for object in objects:
-        # Si l'index de bac actuel est >= le nombre de bacs dans la liste
-        # nous devons ajouter un nouveau bac à la liste
-        if bin_index >= len(bins):
-            bins.append([])
-        # Si le bac actuel a suffisamment d'espace, nous ajoutons l'objet à ce bac
-        if(sum(bins[bin_index]) + object <= bin_size):
-            bins[bin_index].append(object)
-        # Sinon, on commence un nouveau bin et on ajoute l'objet
+def branchAndBound(n, c, w):
+    # initialize the minimum number of boxes to n (on met each objet dans 1 box donc on aura n boxes au debut)
+    minBoxes = n
+    # create an empty list to store Node objects
+    Nodes = []
+    # create an empty list to store the contents of each box
+    boxContents = [[] for _ in range(n)]
+    # initialize the remaining capacity of each bin to c (we'll have n boxes of c capacity)
+    wRemaining = [c] * n
+    # initialize the number of boxes to 0
+    numBoxes = 0
+    # create a new Node object with the above parameters
+    curN = Node(wRemaining, 0, numBoxes, boxContents)
+    # add the current node to the list of nodes
+    Nodes.append(curN)
+    # loop until there are no more nodes left to explore
+    while len(Nodes) > 0:
+        # get the last node added to the list of nodes
+        curN = Nodes.pop()
+        # get the level of the current node
+        curLevel = curN.getLevel()
+        # if all objects have been assigned to boxes and the current solution is better than the current best solution
+        if curLevel == n and curN.getNumberBoxes() < minBoxes:
+            # update the minimum number of boxes
+            minBoxes = curN.getNumberBoxes()
+            # deep copy the box contents to store the current best solution
+            boxContents = copy.deepcopy(curN.boxContents)
         else:
-            bin_index += 1
-            bins.append([object])
-    return bins
-
-def BinPacking_BB(objects,bin_size):
-    # Obtenir le nombre d'objets
-    n = len(objects)
-    # Solution initiale : initialiser la borne inférieure (bins minimum utilisés)
-    lower_bound = n / bin_size
-    # Initialiser la meilleure solution à Aucun
-    solution = None
-    # Initialiser une file d'attente prioritaire
-    priority_queue = [(lower_bound,   # borne inférieure
-                        n,             # nombre d'objets restants
-                        [],            # liste vide pour les bacs
-                        objects)]      # liste des objets restants (initialement nous n'avons encore emballé aucun objet)
-    # Tant que la file d'attente prioritaire n'est pas vide
-    cpt = 0
-    elag = 0
-    while priority_queue:
-        # pop l'état qui a la borne inférieure la plus basse
-        (lower_bound,number_of_remaining_objects,bins,remaining_objects) = heapq.heappop(priority_queue)
-        # Si la meilleure solution a déjà été trouvée et que la borne inférieure de l'état actuel est >= le nombre de bacs utilisés dans cette solution, nous sautons cet état (c'est-à-dire : on fait un elagage)
-        if(solution is not None and lower_bound >= solution['number_of_bins_used']):
-            elag += 1
-            continue
-        # Si tous les objets sont emballés, il faut vérifier si la solution actuelle est la meilleure, si oui il faut mettre à jour la solution
-        if not remaining_objects:
-            number_of_bins_used = len(bins) 
-            if solution is None or number_of_bins_used < solution['number_of_bins_used']:
-                # Mettre à jour la solution
-                solution = {
-                    'number_of_bins_used' : number_of_bins_used,
-                    'bins' : bins,
-                }
-        # Sinon, branchez en considérant tous les bacs possibles pour emballer l'objet suivant et poussez cet état vers la file d'attente prioritaire
-        else:
-            object = remaining_objects[0] # récupérer l'objet dans la liste des objets restants
-            for bin_index, bin in enumerate(bins):
-                # si nous pouvons ajouter les objets à l'un des bacs que nous avons
-                if sum(bin) + object <= bin_size: 
-                    new_bins = bins[:] # mettre à jour les nouveaux bacs
-                    new_bins[bin_index] = bin + [object] # ajouter l'objet à la bin
-                    new_remaining_objects = remaining_objects[1:] # mettre à jour les objets restants
-                    # calculer la borne inférieure
-                    lower_bound = len(new_remaining_objects) / bin_size + len(nextFit(new_remaining_objects,bin_size))
-                    # pousser l'état vers la file d'attente prioritaire
-                    heapq.heappush(priority_queue,(lower_bound,len(new_remaining_objects),new_bins,new_remaining_objects))
-            # Si nous ne pouvons pas ajouter les objets à l'un des bacs existants, nous en ajoutons un
-            new_bins = bins + [[object]] # mettre à jour les bacs
-            new_remaining_objects = remaining_objects[1:]
-            # calculer la borne inférieure
-            lower_bound = len(new_remaining_objects) / bin_size + len(nextFit(new_remaining_objects,bin_size))
-            # pousser l'état vers la file d'attente prioritaire
-            heapq.heappush(priority_queue,(lower_bound,len(new_remaining_objects),new_bins,new_remaining_objects))
-        cpt += 1
-    return solution,cpt,elag
+            # get the index of the next box to add an object to
+            indNewBox = curN.getNumberBoxes()
+            # only consider adding a new box if the current solution is still potentially better than the current best solution
+            if indNewBox < minBoxes:
+                # get the weight of the object at the current level
+                wCurLevel = w[curLevel]
+                # consider adding the object to each box
+                for i in range(indNewBox + 1):
+                    # only add the object to a box if there is enough remaining capacity in the box and there are more objects to assign
+                    if curLevel < n and curN.getWRemaining(i) >= wCurLevel:
+                        # create a new list of remaining capacities by copying the current list and subtracting the weight of the object from the appropriate bin
+                        newWRemaining = curN.getWRemainings().copy()
+                        newWRemaining[i] -= wCurLevel
+                        # create a new list of box contents by copying the current list and appending the current object to the appropriate box
+                        newBoxContents = copy.deepcopy(curN.boxContents)
+                        newBoxContents[i].append(curLevel + 1)
+                        # create a new Node object with the updated parameters
+                        if i == indNewBox:
+                            newNode = Node(newWRemaining, curLevel + 1, indNewBox + 1, newBoxContents)
+                        else:
+                            newNode = Node(newWRemaining, curLevel + 1, indNewBox, newBoxContents)
+                        Nodes.append(newNode)
+    return minBoxes, boxContents
