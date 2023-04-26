@@ -4,6 +4,7 @@ from FirstFit import *
 from NextFit import *
 from BestFit import *
 from WorstFit import *
+from TabuSearch import RT
 from testParameters import *
 import random
 import time
@@ -182,6 +183,29 @@ def binpackingfunctionNextFit():
     result2 = "NB_bins Minimal: " + str(minBoxes) 
     result_label.config(text=result)
     result_label2.config(text=result2)
+# 7:
+def binpackingfunctionRT():
+    elapsed_time,minBoxes,solution = RT()
+    for tableau in bins_frame.winfo_children():
+        tableau.destroy()
+    couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
+    # Créer une liste de tableaux avec des cases aléatoires
+    for i, bin in enumerate(solution):
+        if bin:
+            couleur = couleurs[i % len(couleurs)]
+            tableau = tk.Frame(bins_frame, bd=1, relief="solid", bg=couleur)
+            for j in range(len(bin)):
+                tk.Label(tableau, text=f" {bin[j]} ", bd=1, relief="solid").pack(side="left", padx=5, pady=5, fill="x")
+            tableau.pack(side="top", padx=10, pady=10, fill="x")
+    bins_frame.update_idletasks()
+    content_canvas.config(scrollregion=content_canvas.bbox(tk.ALL))
+    result = f"{elapsed_time:.5f}"
+    result2 = f"{minBoxes}"
+    result  = "Temp d'Execution: " + str(result)+ " s"
+    result2 = "NB_bins Minimal: " + str(minBoxes) 
+    result_label.config(text=result)
+    result_label2.config(text=result2)
+    
 # Create a window object
 window = tk.Tk()
 # Add a title to the window
@@ -212,6 +236,8 @@ button5 = tk.Button(top_frame, text="Méthode Worst Fit", command=binpackingfunc
 button5.pack(side=tk.LEFT, padx=10, pady=10)
 button6 = tk.Button(top_frame, text="Méthode Next Fit", command=binpackingfunctionNextFit)
 button6.pack(side=tk.LEFT, padx=10, pady=10)
+button7 = tk.Button(top_frame, text="Méthode Recherche Tabou", command=binpackingfunctionRT)
+button7.pack(side=tk.LEFT, padx=10, pady=10)
 # Center the frame horizontally
 top_frame.place(relx=0.5, rely=0, anchor=tk.N)
 
@@ -229,7 +255,7 @@ output_frame.place(relx=0.5, rely=0.1, anchor=tk.N)
 content_frame = tk.Frame(main_frame, bd=1, relief="solid")
 content_frame.pack(side=tk.LEFT, expand=True)
 # Create a label for the content
-content_label = tk.Label(content_frame, text="Bins Content")
+content_label = tk.Label(content_frame, text="Contenu des Bins")
 content_label.pack(side=tk.TOP, padx=10, pady=10)
 
 # Create a canvas for the bins content
