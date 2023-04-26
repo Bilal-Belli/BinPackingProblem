@@ -1,3 +1,4 @@
+from testParameters import *
 class Item:
 	def __init__(self):
 		self.weight = 0
@@ -20,7 +21,7 @@ class Bin:
 	def __init__(self):
 	#Set B of items in the bin and cap is the capacity of the bin
 		self.B = []
-		self.cap = 50
+		self.cap = bin_size
 	def getCapacity(self):
 		return self.cap
 	def getB(self):
@@ -61,7 +62,7 @@ class BinPacking:
 	def __str__(self):
 		strp = "Weight of each bin: "
 		for bin2 in self.BinList:
-			strp = strp + str(50 - bin2.getCapacity()) + ", "
+			strp = strp + str(bin_size - bin2.getCapacity()) + ", "
 		return strp
 	def __repr__(self):
 		return str(self)

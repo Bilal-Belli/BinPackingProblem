@@ -4,6 +4,7 @@ from FirstFit import *
 from NextFit import *
 from BestFit import *
 from WorstFit import *
+from testParameters import *
 import random
 import time
 
@@ -248,18 +249,13 @@ content_canvas.create_window((0, 0), window=bins_frame, anchor=tk.NW)
 tableau = tk.Frame(bins_frame, bd=1, relief="solid")
 
 # Ouvrir le fichier en mode lecture
-with open("benchMark.txt", "r") as file:
+with open("benchMark4heuristics.txt", "r") as file:
     Objets = []
     # Lire le contenu ligne par ligne
     for ligne in file:
         # Convertir la ligne en nombre et ajouter à la liste
         taille = int(ligne.strip())
         Objets.append(taille)
-
-# Test 
-# Bin size
-bin_size = 50
-nb_objets=50
 
 # Update the canvas scroll region after adding the bins
 bins_frame.update_idletasks()
