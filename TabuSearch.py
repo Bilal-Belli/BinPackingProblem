@@ -240,10 +240,10 @@ class TabuSearch:
         """
         return random.choice(self.movers).apply(pattern, list(self.heuristic_map.keys()))
 
-def RT():
+def RT(fileName):
     boxContent=[]
     # Ouvrir le fichier en mode lecture
-    with open("benchMark4heuristics.txt", "r") as file:
+    with open(fileName, "r") as file:
         Objets = []
         for ligne in file:
             taille = int(ligne.strip())
@@ -269,14 +269,6 @@ def RT():
             for singleItem in singleBin.items:
                 newBoxContent.append(singleItem.size)
             boxContent.append(newBoxContent)
-        # summary = {
-        #     "execution_time": str(elapsed_time),
-        #     "num_bins": len(thing.bins),
-        #     "iterations": total_iterations,
-        #     # "stagnation": stagnation,
-        #     # "combination": combination,
-        #     # "tabu_list": list(thing.tabu_list)
-        # }
     return elapsed_time,len(thing.bins),boxContent
 
 # Pour le test en ce fichier

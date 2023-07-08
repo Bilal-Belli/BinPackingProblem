@@ -5,6 +5,7 @@ from NextFit import *
 from BestFit import *
 from WorstFit import *
 from TabuSearch import RT
+from GeneticAlgorithme import AG
 from testParameters import *
 import random
 import time
@@ -12,9 +13,8 @@ import time
 # fonction comme si ils sont déja implimmentées
 # Define a function to update the result label
 # 1:
-def binpackingfunctionBruteForce():
+# def binpackingfunctionBruteForce():
     # nothing
-    result = 1111
     # result = "Temp d'Execution: " + str(result)
     # result_label.config(text=result)
 # 2:
@@ -185,7 +185,7 @@ def binpackingfunctionNextFit():
     result_label2.config(text=result2)
 # 7:
 def binpackingfunctionRT():
-    elapsed_time,minBoxes,solution = RT()
+    elapsed_time,minBoxes,solution = RT(benchmarkFileName)
     for tableau in bins_frame.winfo_children():
         tableau.destroy()
     couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
@@ -206,6 +206,29 @@ def binpackingfunctionRT():
     result_label.config(text=result)
     result_label2.config(text=result2)
     
+# 8:
+def binpackingfunctionAG():
+    elapsed_time,minBoxes,solution = AG(benchmarkFileName)
+    for tableau in bins_frame.winfo_children():
+        tableau.destroy()
+    couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
+    # Créer une liste de tableaux avec des cases aléatoires
+    for i, bin in enumerate(solution):
+        if bin:
+            couleur = couleurs[i % len(couleurs)]
+            tableau = tk.Frame(bins_frame, bd=1, relief="solid", bg=couleur)
+            for j in range(len(bin)):
+                tk.Label(tableau, text=f" {bin[j]} ", bd=1, relief="solid").pack(side="left", padx=5, pady=5, fill="x")
+            tableau.pack(side="top", padx=10, pady=10, fill="x")
+    bins_frame.update_idletasks()
+    content_canvas.config(scrollregion=content_canvas.bbox(tk.ALL))
+    result = f"{elapsed_time:.5f}"
+    result2 = f"{minBoxes}"
+    result  = "Temp d'Execution: " + str(result)+ " s"
+    result2 = "NB_bins Minimal: " + str(minBoxes) 
+    result_label.config(text=result)
+    result_label2.config(text=result2)
+
 # Create a window object
 window = tk.Tk()
 # Add a title to the window
@@ -226,18 +249,20 @@ top_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 # Add two buttons to the frame
 # button1 = tk.Button(top_frame, text="Méthode Exacte", command=binpackingfunctionBruteForce)
 # button1.pack(side=tk.LEFT, padx=10, pady=10)
-button2 = tk.Button(top_frame, text="Méthode Par Branch And Bound", command=binpackingfunctionBranchAndBound)
+button2 = tk.Button(top_frame, text="Branch And Bound", command=binpackingfunctionBranchAndBound)
 button2.pack(side=tk.LEFT, padx=10, pady=10)
-button3 = tk.Button(top_frame, text="Méthode First Fit", command=binpackingfunctionFirstFit)
+button3 = tk.Button(top_frame, text="First Fit", command=binpackingfunctionFirstFit)
 button3.pack(side=tk.LEFT, padx=10, pady=10)
-button4 = tk.Button(top_frame, text="Méthode Best Fit", command=binpackingfunctionBestFit)
+button4 = tk.Button(top_frame, text="Best Fit", command=binpackingfunctionBestFit)
 button4.pack(side=tk.LEFT, padx=10, pady=10)
-button5 = tk.Button(top_frame, text="Méthode Worst Fit", command=binpackingfunctionWorstFit)
+button5 = tk.Button(top_frame, text="Worst Fit", command=binpackingfunctionWorstFit)
 button5.pack(side=tk.LEFT, padx=10, pady=10)
-button6 = tk.Button(top_frame, text="Méthode Next Fit", command=binpackingfunctionNextFit)
+button6 = tk.Button(top_frame, text="Next Fit", command=binpackingfunctionNextFit)
 button6.pack(side=tk.LEFT, padx=10, pady=10)
-button7 = tk.Button(top_frame, text="Méthode Recherche Tabou", command=binpackingfunctionRT)
+button7 = tk.Button(top_frame, text="Recherche Tabou", command=binpackingfunctionRT)
 button7.pack(side=tk.LEFT, padx=10, pady=10)
+button8 = tk.Button(top_frame, text="Algorithme Génétique", command=binpackingfunctionRT)
+button8.pack(side=tk.LEFT, padx=10, pady=10)
 # Center the frame horizontally
 top_frame.place(relx=0.5, rely=0, anchor=tk.N)
 
@@ -275,7 +300,9 @@ content_canvas.create_window((0, 0), window=bins_frame, anchor=tk.NW)
 tableau = tk.Frame(bins_frame, bd=1, relief="solid")
 
 # Ouvrir le fichier en mode lecture
-with open("benchMark4heuristics.txt", "r") as file:
+benchmarkFileName="benchmarks/benchMark4heuristics.txt"
+with open(benchmarkFileName, "r") as file:
+    # 4heuristics
     Objets = []
     # Lire le contenu ligne par ligne
     for ligne in file:
