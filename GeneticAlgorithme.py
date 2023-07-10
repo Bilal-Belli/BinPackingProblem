@@ -1,3 +1,4 @@
+from testParameters import *
 import copy
 import itertools
 import numpy as np
@@ -284,15 +285,13 @@ def genetic_algorithm(weights, capacity, population_size, generations, k, tourna
 
 def AG(benchmarkFileName):
     with open(benchmarkFileName, "r") as ifile:
-        bin_capacity = int(ifile.readline())
-        items_length = int(ifile.readline())
         items = []
-        for i in range(items_length):
+        for i in range(nb_objets):
             line = ifile.readline().strip()
             if line:
                 items.append(int(line))
         start_time = time.time()
-        best_length, solution = genetic_algorithm(items, bin_capacity, 50, 50, 2, 0.7, 0.3, 0.4, 'FF', False, 'TS')
+        best_length, solution = genetic_algorithm(items, bin_size, 50, 50, 2, 0.7, 0.3, 0.4, 'FF', False, 'TS')
         end_time = time.time()
         execution_time = end_time - start_time
     

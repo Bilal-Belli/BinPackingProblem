@@ -6,6 +6,7 @@ from BestFit import *
 from WorstFit import *
 from TabuSearch import RT
 from GeneticAlgorithme import AG
+from WWO_RS import H_WWO_RS
 from testParameters import *
 import random
 import time
@@ -189,6 +190,7 @@ def binpackingfunctionRT():
     for tableau in bins_frame.winfo_children():
         tableau.destroy()
     couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
+    print(solution)
     # Créer une liste de tableaux avec des cases aléatoires
     for i, bin in enumerate(solution):
         if bin:
@@ -213,6 +215,30 @@ def binpackingfunctionAG():
         tableau.destroy()
     couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
     # Créer une liste de tableaux avec des cases aléatoires
+    for i, bin in enumerate(solution):
+        if bin:
+            couleur = couleurs[i % len(couleurs)]
+            tableau = tk.Frame(bins_frame, bd=1, relief="solid", bg=couleur)
+            for j in range(len(bin)):
+                tk.Label(tableau, text=f" {bin[j]} ", bd=1, relief="solid").pack(side="left", padx=5, pady=5, fill="x")
+            tableau.pack(side="top", padx=10, pady=10, fill="x")
+    bins_frame.update_idletasks()
+    content_canvas.config(scrollregion=content_canvas.bbox(tk.ALL))
+    result = f"{elapsed_time:.5f}"
+    result2 = f"{minBoxes}"
+    result  = "Temp d'Execution: " + str(result)+ " s"
+    result2 = "NB_bins Minimal: " + str(minBoxes) 
+    result_label.config(text=result)
+    result_label2.config(text=result2)
+
+# 9:
+def binpackingHybridation_WWO_and_RS():
+    elapsed_time,minBoxes,solution_ = H_WWO_RS(benchmarkFileName)
+    for tableau in bins_frame.winfo_children():
+        tableau.destroy()
+    couleurs = ["#f2f2f2", "#e6e6e6", "#d9d9d9", "#cccccc", "#bfbfbf"]
+    # Créer une liste de tableaux avec des cases aléatoires
+    solution = [value for value in solution_.values()]
     for i, bin in enumerate(solution):
         if bin:
             couleur = couleurs[i % len(couleurs)]
@@ -263,6 +289,8 @@ button7 = tk.Button(top_frame, text="Recherche Tabou", command=binpackingfunctio
 button7.pack(side=tk.LEFT, padx=10, pady=10)
 button8 = tk.Button(top_frame, text="Algorithme Génétique", command=binpackingfunctionRT)
 button8.pack(side=tk.LEFT, padx=10, pady=10)
+button9 = tk.Button(top_frame, text="Hybridation WWO & RS", command=binpackingHybridation_WWO_and_RS)
+button9.pack(side=tk.LEFT, padx=10, pady=10)
 # Center the frame horizontally
 top_frame.place(relx=0.5, rely=0, anchor=tk.N)
 
