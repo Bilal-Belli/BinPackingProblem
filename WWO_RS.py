@@ -6,7 +6,6 @@ import math
 import numpy as np
 import time
 
-
 def converterBP2WWO(solution:BinPacking):
     length_dimension_list = [solution.max_weight] * len(solution.bin_list)
     item_weight_list=[]
@@ -137,7 +136,7 @@ def H_WWO_RS(benchmarkFileName):
     with open(benchmarkFileName, "r") as file:
         array = [int(x) for x in file.read().split()]
 
-    # shuffle(array)
+    # shuffle(array) # without order
     bin_packing_instance1= BinPacking(len(array), array, bin_size)
     bin_packing_instance1.first_fit()
     bin_packing_instance2 = BinPacking(len(array), array, bin_size)
@@ -152,5 +151,4 @@ def H_WWO_RS(benchmarkFileName):
 
     stop_time = time.time()
     elapsed_time = stop_time - start_time
-    # print(f"Elapsed time: {elapsed_time} seconds")
     return elapsed_time,sol_optimal,solution_bins

@@ -16,8 +16,6 @@ import time
 # 1:
 # def binpackingfunctionBruteForce():
     # nothing
-    # result = "Temp d'Execution: " + str(result)
-    # result_label.config(text=result)
 # 2:
 def binpackingfunctionBranchAndBound():
     start_time = time.time()
@@ -272,7 +270,7 @@ main_frame.pack(fill=tk.BOTH, expand=True)
 # Create a frame for the buttons
 top_frame = tk.Frame(main_frame)
 top_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-# Add two buttons to the frame
+# Add buttons to the frame
 # button1 = tk.Button(top_frame, text="Méthode Exacte", command=binpackingfunctionBruteForce)
 # button1.pack(side=tk.LEFT, padx=10, pady=10)
 button2 = tk.Button(top_frame, text="Branch And Bound", command=binpackingfunctionBranchAndBound)
