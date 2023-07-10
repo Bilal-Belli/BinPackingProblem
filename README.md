@@ -11,10 +11,6 @@ This repository serves as a comprehensive collection of solutions and implementa
 - Genetic Algorithme.
 - Hybridation WWO and Simulated Annealing.
 
-<div align="center">
-   <img width="700"  src="">
-</div>
-
 ### Article
 
 ### Code & Language
@@ -25,21 +21,8 @@ This repository serves as a comprehensive collection of solutions and implementa
 - Second, ensure that you have installed the required libraries and you fix dependencies (path).
 - There is a file nammed "testParameters.py", if you select another benchmarking file, you need to make changes in this file (Bins max size and Number of objects).
 ### Code
-### Training Progress
 <div align="center">
    <img   src="">
-</div>
-
-<div align="center">
-   <img   src="">
-</div>
-
-<div align="center">
-   <img  width="550" src="">
-</div>
-
-<div align="center">
-   <img  width="550" src="">
 </div>
 
 ### License
