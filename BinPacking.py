@@ -28,10 +28,9 @@ class BinPacking:
                 if self.bin_weight(bin_index) + self.item_weight_list[item_index] <= self.max_weight:
                     self.bin_list[bin_index][item_index] = 1
                     break
-                
+
     def next_fit(self):
         current_bin_index = 0
-
         for item_index in range(self.number_of_items):
             if self.bin_weight(current_bin_index) + self.item_weight_list[item_index] <= self.max_weight:
                 self.bin_list[current_bin_index][item_index] = 1
@@ -41,27 +40,20 @@ class BinPacking:
 
     def best_fit(self):
         bin_capacities = [self.max_weight] * self.number_of_items
-        
         for item_index in range(self.number_of_items):
             best_bin_index = -1
             min_remaining_capacity = float('inf')
-            
             for bin_index in range(self.number_of_items):
                 remaining_capacity = bin_capacities[bin_index] - self.item_weight_list[item_index]
-                
                 if remaining_capacity >= 0 and remaining_capacity < min_remaining_capacity:
                     best_bin_index = bin_index
                     min_remaining_capacity = remaining_capacity
-            
             if best_bin_index != -1:
                 self.bin_list[best_bin_index][item_index] = 1
                 bin_capacities[best_bin_index] -= self.item_weight_list[item_index]
 
-
-
     def first_fit_decreasing(self):
         sorted_items = sorted(range(self.number_of_items), key=lambda x: self.item_weight_list[x], reverse=True)
-
         for item_index in sorted_items:
             bin_index = 0
             while bin_index < self.number_of_items:
@@ -72,8 +64,6 @@ class BinPacking:
             else:
                 # Start a new bin if no bin can accommodate the item
                 self.bin_list[bin_index][item_index] = 1
-
-
 
     def print_solution(self):
         for bin in self.bin_list:
