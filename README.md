@@ -22,10 +22,10 @@ This repository serves as a comprehensive collection of solutions and implementa
 - Hybridation WWO (water waves optimiser) and Simulated Annealing.
 ## Article (describe the hybridation schema)
 ### Research Paper
-The available research paper document about our hybrid solution is written in 'French'. You can check it in this <a href="">link</a>.
+The available research paper document about our hybrid solution is written in 'French'. You can check it in this <a href="https://github.com/Bilal-Belli/BinPackingProblem/blob/main/ResearchPaper/OPT_SIQ1_EQUIPE02_RESEARCH_PAPER.pdf">link</a>.
 ### Benchmarking
-- The resulting benchmark table is <a href="">here</a>.
-- We chose to conduct our test on 18 benchmarks, which are available <a href="">here</a>.
+- The resulting benchmark table is <a href="https://github.com/Bilal-Belli/BinPackingProblem/blob/main/benchmarks/TableBenchmarkingResults.xlsx">here</a>.
+- We chose to conduct our test on 18 benchmarks, which are available <a href="https://github.com/Bilal-Belli/BinPackingProblem/tree/main/benchmarks">here</a>.
 ### Performances
 #### Comparaison Fitness between (Exact solution, WWO, WWO with hybridation)
 <div align="center">
@@ -51,4 +51,3 @@ This repository is licensed under the MIT License.
 - 
 - 
 - 
-
