@@ -46,8 +46,8 @@ The available research paper document about our hybrid solution is written in 'F
 This repository is licensed under the MIT License.
 
 ### Thank you to the contributors
-- 
-- 
-- 
-- 
-- 
+- [abiiir-hub](https://github.com/abiiir-hub)
+- [Diihiia](https://github.com/Diihiia)
+- [Rayane-Aboud](https://github.com/Rayane-Aboud)
+- [rinkanilya](https://github.com/rinkanilya)
+- [tired-as-f](https://github.com/tired-as-f)
